@@ -1,0 +1,291 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-6">
+      <app-item-search
+        (itemSelectedEvent) = "onItemSelectedEvent($event)"
+        >
+        </app-item-search>
+    </div>
+    <div class="col-sm-6">
+      <app-customer-search>
+    
+      </app-customer-search>
+    </div>
+  </div>
+</div>
+
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-6" *ngIf="batchItems && batchItems.length>0">
+        <div class="card">
+          <div class="card-header">
+            <strong>Item Selection</strong>
+            <small>Form</small>
+          </div>
+          <div class="card-body">
+            <br/>
+            <div class="row" *ngIf="batchItems && batchItems.length>0">
+                    <!-- <label style="padding-left: 10px;">Select from prefered batch</label> -->
+                    <h5 style="padding-left: 10px">Select from prefered batch</h5>
+                    <table class="table">
+                        <thead>
+                              <tr>
+                                <th>Batch Date</th>
+                                <th>Buying Price</th>
+                                <th>Selling Price</th>
+                                <th>Available Quantity</th>
+                                <th>Total Quantity</th>
+                              </tr>
+                        </thead>
+                        <tbody>
+                              <tr *ngFor = "let batchItem of batchItems" 
+                              (click)="selectBatchItem(batchItem)"
+                              [class.active]="isSelected(batchItem)">
+                                <td>{{batchItem.batchId.batchDate}}</td>
+                                <td>{{batchItem.buyingPrice}}</td>
+                                <td>{{batchItem.sellingPrice}}</td>
+                                <td>
+                                <span  
+                                [ngClass]="{
+                                  'badge badge-success':batchItem.availableQuantity == 10,
+                                  'badge badge-danger':batchItem.availableQuantity >= 100
+                                }"
+                                >
+                                  {{batchItem.availableQuantity}}
+                                </span>
+                                </td>
+                                <td>
+                                  {{batchItem.totalQuantity}}
+                                </td>
+                              </tr>
+                        </tbody>
+                    </table>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="sellingPrice">Selling Price</label>
+                  <!-- <input class="form-control" id="sellingPrice" currencyMask [(ngModel)]="value" min="-10.50" max="100.75" /> -->
+                  <input 
+                    class="form-control"
+                    id="sellingPrice"
+                    currencyMask
+                    [(ngModel)]="saleItem.saleItemSellingPrice"
+                    (keyup)="onChangeSelligPrice()"/>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="quantity">Quantity</label>
+                  <input 
+                    class="form-control"
+                    id="quantity"
+                    type="number"
+                    [(ngModel)]="saleItem.saleItemQuantity"
+                    (keyup) = "onChangeQuantity()"/>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="totalPrice">Total Price</label>
+                  <input
+                    class="form-control"
+                    disabled
+                    id="totalPrice"
+                    currencyMask
+                    [(ngModel)]="saleItem.saleItemTotalPrice"
+                  />
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="saleItemTotalPriceAfterDiscount">Net Price</label>
+                  <input
+                    class="form-control"
+                    disabled
+                    id="saleItemTotalPriceAfterDiscount"
+                    currencyMask
+                    [(ngModel)]="saleItem.saleItemTotalPriceAfterDiscount"
+                  />
+                </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row" *ngIf="batchItemSelected">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="discountPercentage">Discount In Percentage (%)</label>
+                        <!-- <input class="form-control" id="sellingPrice" currencyMask [(ngModel)]="value" min="-10.50" max="100.75" /> -->
+                        <input
+                          class="form-control"
+                          id="discountPercentage"
+                          type="number"
+                          [(ngModel)]="discountPercentage"
+                          (keyup) = "onChangeDiscountPercentage()"
+                        />
+                    </div>
+                </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="discountRupee">Discount In Rupee (LKR)</label>
+                        <input 
+                          class="form-control"
+                          id="discountRupee"
+                          currencyMask
+                          [(ngModel)]="discountRupee"
+                          (keyup) = "onChangeDiscountRupee()"
+                        />
+                      </div>
+                </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label>&nbsp;&nbsp;</label>
+                        <button
+                         type="button"
+                         class="btn btn-block btn-primary"
+                         [disabled] = "isAddItemDisabled()"
+                         (click) = "addSaleItem()">{{buttomText}}</button>
+                      </div>
+                     </div>
+            </div><!--/.row-->
+          </div>
+        </div>
+      </div><!--/.col-->
+
+      <div class="col-sm-6" *ngIf="!(batchItems && batchItems.length>0)">
+        <span></span>
+      </div>
+
+
+      <div class="col-sm-6" *ngIf="sale.saleItems && sale.saleItems.length>0">
+            <div class="card">
+              <div class="card-header">
+                <strong>Items In Bucket</strong>
+                <small>Form</small>
+              </div>
+              <div class="card-body">
+
+                  
+
+                <div class="row" *ngIf="sale.saleItems.length>0">
+                        <!-- <label style="padding-left: 10px;">Select from prefered batch</label> -->
+                        <h5 style="padding-left: 10px">Select from prefered batch</h5>
+                        <table class="table table-striped" style="max-height: 10px; overflow-y: scroll" >
+                            <thead>
+                                  <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th>Selling Price</th>
+                                    <th>Total Price</th>
+                                    <th>Discount</th>
+                                    <th>Price After Discount</th>
+                                    <th>Action</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                                  <tr *ngFor="let saleItem of sale.saleItems; let i = index" (click) = "saleItemReselected(saleItem, i)">
+                                    <td>{{saleItem.batchItemId.itemId.itemName}}</td>
+                                    <td>{{saleItem.saleItemQuantity}}</td>
+                                    <td>{{saleItem.saleItemSellingPrice}}</td>
+                                    <td>
+                                      <span class="badge badge-danger">{{saleItem.saleItemTotalPrice}}</span>
+                                    </td>
+                                    <td>
+                                      <span class="badge badge-success">{{saleItem.saleItemDiscount}}</span>
+                                    </td>
+                                    <td>
+                                      <span class="badge badge-success">{{saleItem.saleItemTotalPriceAfterDiscount}}</span>
+                                    </td>
+                                    <td (click)="removeSaleItem(saleItem)">
+                                        <span class="badge badge-danger">X</span>
+                                    </td>
+                                  </tr>
+                            </tbody>
+                        </table>
+                </div>
+    
+                <div class="row" *ngIf="sale.saleItems.length>0">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="saleTotal">Total Sale Price</label>
+                      <!-- <input class="form-control" id="sellingPrice" currencyMask [(ngModel)]="value" min="-10.50" max="100.75" /> -->
+                      <input
+                       class="form-control"
+                       id="saleTotal" 
+                       disabled 
+                       currencyMask 
+                       [(ngModel)]="sale.saleTotal"/>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="saleNumberOfItems">Number of Items</label>
+                      <input
+                        class="form-control" 
+                        id="saleNumberOfItems" 
+                        disabled
+                        [(ngModel)]="sale.saleNumberOfItems"/>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="saleTotalDiscount">Total Discount</label>
+                      <input
+                       class="form-control"
+                       disabled id="saleTotalDiscount"
+                       currencyMask 
+                       [(ngModel)]="sale.saleTotalDiscount"/>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                      <div class="form-group">
+                        <label for="saleTotalAfterDiscount">Price After Discount</label>
+                        <input
+                          class="form-control"
+                          disabled
+                          id="saleTotalAfterDiscount"
+                          currencyMask
+                          [(ngModel)]="sale.saleTotalAfterDiscount"/>
+                      </div>
+                    </div>
+                </div><!--/.row-->
+                <div class="row" *ngIf="sale.saleItems.length>0">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="discountPercentageTotalSale">Sale Discount In Percentage (%)</label>
+                            <!-- <input class="form-control" id="sellingPrice" currencyMask [(ngModel)]="value" min="-10.50" max="100.75" /> -->
+                            <input 
+                             class="form-control" 
+                             id="discountPercentageTotalSale"
+                             (keyup)="onDiscountPercntageTotalSaleChanged()"
+                             [(ngModel)]="discountPercentageTotalSale"/>
+                        </div>
+                    </div>
+                        <div class="col-sm-4">
+                          <div class="form-group">
+                            <label for="discountRupeeTotalSale">Sale Discount In Rupee (LKR)</label>
+                            <input
+                             class="form-control"
+                             id="discountRupeeTotalSale"
+                             currencyMask
+                             (keyup)="onDiscountRupeeTotalSaleChanged()"
+                             [(ngModel)]="discountRupeeTotalSale"/>
+                          </div>
+                    </div>
+                        <div class="col-sm-4">
+                          <div class="form-group">
+                            <label>&nbsp;&nbsp;</label>
+                            <button
+                             type="button"
+                             (click) = "saveSale()"
+                             class="btn btn-block btn-primary">PROCEED</button>
+                          </div>
+                         </div>
+                </div><!--/.row-->
+              </div>
+            </div>
+      </div><!--/.col-->
+
+
+    </div><!--/.row-->
+</div>

@@ -1,0 +1,31 @@
+<div class="card">
+    <div class="card-header">
+      <strong>Supplier Selection</strong>
+      <small>Form</small>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="name">Supplier To be Selected Autmatically</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter your Supplier Name">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+              <label for="typeahead-format">Search for a supplier:</label>
+              <input type="text" [value]="querySupplier" placeholder="Type to Search Supplier"
+                  ngxTypeahead  class="col-sm-12 form-control"
+                  [taUrl]="urlSupplier"
+                  [taParams]="paramsSupllier"
+                  [taApi]="apiSupplier"
+                  (taSelected)="onSupplierSelected($event)"
+              >
+          </div>
+        </div>
+      </div>
+      <!--/.row-->
+  
+      <br/>
+    </div>
+  </div>

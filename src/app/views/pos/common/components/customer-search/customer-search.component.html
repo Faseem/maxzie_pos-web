@@ -1,0 +1,31 @@
+<div class="card">
+  <div class="card-header">
+    <strong>Customer Selection</strong>
+    <small>Form</small>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="name">Customer To be Selected Autmatically</label>
+          <input type="text" class="form-control" id="name" placeholder="Enter your name">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+            <label for="typeahead-format">Search for a customer:</label>
+            <input type="text" [value]="queryCustomer" placeholder="Type to Search Customer"
+                ngxTypeahead  class="col-sm-12 form-control"
+                [taUrl]="urlCustomer"
+                [taParams]="paramsCustomer"
+                [taApi]="apiCustomer"
+                (taSelected)="onCustomerSelected($event)"
+            >
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+
+    <br/>
+  </div>
+</div>

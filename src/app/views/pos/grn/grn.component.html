@@ -1,0 +1,16 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-6">
+        <app-item-search
+          (itemSelectedEvent) = "onItemSelectedEvent($event)"
+          [isEnableAdding] = "true"
+          >
+          </app-item-search>
+      </div>
+      <div class="col-sm-6">
+        <app-customer-search>
+      
+        </app-customer-search>
+      </div>
+    </div>
+</div>

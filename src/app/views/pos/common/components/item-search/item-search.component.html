@@ -1,0 +1,166 @@
+<div class="card">
+  <div class="card-header">
+    <strong>Item Selection</strong>
+    <small>Form</small>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-6" *ngIf="!isEnableAdding">
+        <div class="btn-group" style="width: 100%" dropdown>
+          <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+            {{getCategoryName()}} <span class="caret"></span>
+          </button>
+          <ul *dropdownMenu class="dropdown-menu" style="width: 100%" role="menu">
+            <li role="menuitem" *ngFor="let category of categories">
+                <a class="dropdown-item" style="width: 100%" (click) = "onCategoryChanged(category)">{{category.categoryName}}</a>
+            </li>
+            <!-- <li class="divider dropdown-divider"></li>
+            <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-sm-6" *ngIf="isEnableAdding"  style="width: 100%">
+        <div class="btn-group" style="width: 90%" dropdown>
+          <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+            {{getCategoryName()}} <span class="caret"></span>
+          </button>
+          <ul *dropdownMenu class="dropdown-menu" style="width: 100%" role="menu">
+            <li role="menuitem" *ngFor="let category of categories">
+                <a class="dropdown-item" style="width: 100%" (click) = "onCategoryChanged(category)">{{category.categoryName}}</a>
+            </li>
+            <!-- <li class="divider dropdown-divider"></li>
+            <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
+            </li> -->
+          </ul>
+        </div>
+
+        <div class="btn-group" style="width: 10%; float: right; margin-right: -4px;" dropdown>
+          <button type="button" class="btn btn-brand btn-sm btn-xing mr-1" style="margin-bottom: 4px"
+          (click) = "addCategoryModal.show()">
+            <i style=" display: table-cell; background-color: #026466" class="fa fa-plus"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <div class="col-sm-6" *ngIf="!isEnableAdding">
+        <div class="form-group">
+            <div class="btn-group" style="width: 100%" dropdown>
+                <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                  {{getBrandName()}} <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu" style="width: 100%" role="menu">
+                  <li role="menuitem" *ngFor="let brand of brands">
+                      <a class="dropdown-item" style="width: 100%" (click) = "onBrandChanged(brand)">{{brand.brandName}}</a>
+                  </li>
+                  <!-- <li class="divider dropdown-divider"></li>
+                  <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
+                  </li> -->
+                </ul>
+            </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6" *ngIf="isEnableAdding">
+        <div class="form-group">
+            <div class="btn-group" style="width: 90%" dropdown>
+                <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                  {{getBrandName()}} <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu" style="width: 100%" role="menu">
+                  <li role="menuitem" *ngFor="let brand of brands">
+                      <a class="dropdown-item" style="width: 100%" (click) = "onBrandChanged(brand)">{{brand.brandName}}</a>
+                  </li>
+                  <!-- <li class="divider dropdown-divider"></li>
+                  <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
+                  </li> -->
+                </ul>
+            </div>
+            <div class="btn-group" style="width: 10%; float: right; margin-right: -4px;" dropdown>
+              <button type="button" class="btn btn-brand btn-sm btn-xing mr-1" style="margin-bottom: 4px">
+                <i style=" display: table-cell; background-color: #026466;" class="fa fa-plus"></i>
+              </button>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="name">BarCode Reader</label>
+          <input type="text" class="form-control" id="name" placeholder="Enter your name">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+            <label for="typeahead-format">Search for a item:</label>
+            <!-- <input type="text" [value]="query" placeholder="Type to Search Items"
+                ngxTypeahead  class="col-sm-12 form-control"
+                [taUrl]="url"
+                [taParams]="params"
+                [taApi]="api"
+                (taSelected)="itemSearchSelected($event)"
+            > -->
+            <input id="typeahead-template" type="text" class="form-control gray-input-box" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt"
+            [inputFormatter]="formatter" (ngModelChange)="itemSearchSelected($event)" [value]="search1" placeholder="Search and select items" />
+
+            <ng-template #rt let-r="result" let-t="term">
+              <ngb-highlight [result]="r.itemName" [term]="t"></ngb-highlight>
+              <!-- </span> -->
+            </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <br/>
+  </div>
+</div>
+
+<div bsModal #addCategoryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-primary" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Category</h4>
+        <button type="button" class="close" (click)="addCategoryModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- <form action="" method="post" class="form-horizontal"> -->
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="categoryName">Category</label>
+            <div class="col-md-9">
+              <input 
+                type="text"
+                id="categoryName" 
+                name="categoryName"
+                class="form-control" 
+                (blur)="isCategoryAvailable()"
+                [(ngModel)]="categorySearchedName"
+                placeholder="Enter Category..">
+              <span class="help-block">Please enter a Category</span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="categoryDescription">Description</label>
+            <div class="col-md-9">
+                <textarea [(ngModel)]="categorySearchedDescription" id="categoryDescription" name="categoryDescription" rows="2" class="form-control" placeholder="Content.."></textarea>
+              <span class="help-block">Please enter category Description</span>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isCategorySeaching">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          </div>
+        <!-- </form> -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="addCategoryModal.hide()">Close</button>
+        <button type="button" class="btn btn-primary" [disabled] = "isAddCategoryDisabled()">Add</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
